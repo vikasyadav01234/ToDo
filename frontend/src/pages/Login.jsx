@@ -13,10 +13,10 @@ function Login() {
 
     const handleOnSubmit=async(e)=>{
         e.preventDefault()
-        console.log(loginData)
+        
         const response=await isLoginValid(loginData)
         if(!response.success){
-            console.log(response)
+            
             setMessage(response.message)
             return;
         }

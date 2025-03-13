@@ -51,3 +51,21 @@ export { isLoginValid }
 
 
 
+const isUserAuthorised=async(token)=>{
+    try {
+        const response=await axios.get('http://localhost:3000/api/auth/verify',
+            {
+            headers:{
+                Authorization: `Bearer ${token}`
+            }}
+        )
+
+        return response.data
+    } catch (error) {
+        return error.response.data
+    }
+}
+
+
+
+export { isUserAuthorised }

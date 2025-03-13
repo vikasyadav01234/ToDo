@@ -1,28 +1,35 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Login from '../pages/Login';
+import { isUserAuthorised } from '../api/authApi';
+import { Outlet } from 'react-router';
 
 function ProtectedRoutes() {
-
-    const [isValid,setIsValid]=useState(false)
-
+    const  [isvalidUser,setIsValidUser]=useState(false)
     const token=localStorage.getItem("token")
 
-    if(!token){
-        return;
-    }
-    
-    const repsonse= isLoggedIn(token)
-    if(!repsonse.success){
-        return;
-    }
-    setIsValid(true)
 
-    isValid==='true'?<Outlet/>:<Login/>
+    useEffect(()=>{
+        if(!token){
+            return
+        }
+
+        async function checkAuthorization(){
+            const response=await isUserAuthorised(token)
+            if(!response.success){
+                return;
+            }
+            setIsValidUser(true)
+        }
+
+        checkAuthorization()
+
+    },[])
 
 
-  return (
-    <div>ProtectedRoutes</div>
-  )
+
+    return isvalidUser?<Outlet/>:<Login/>
+
+
+
 }
-
 export default ProtectedRoutes

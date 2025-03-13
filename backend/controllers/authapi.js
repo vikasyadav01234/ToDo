@@ -78,3 +78,34 @@ const isUserValid = async (req, res) => {
 };
 
 export { isUserValid };
+
+
+
+
+
+
+/*****************************************isUserAuthorized**************/
+
+
+
+const isUserAuth=async(req,res)=>{
+    const token =req.headers.authorization?.split(' ')[1]
+    try {
+        
+    if(!token){
+        return res.status(401).json({success:false,message:`Login Expired! Please Login`})
+    }
+    const decoded=await jwt.verify(token,secret_key)
+    if(!decoded){
+        return res.status(401).json({success:false,message:`Login Expired ! Please Login`})
+    }
+    return res.status(200).json({success:true,message:`User Is Authorized`})
+    } catch (error) {
+        return res.status(500).json({success:false,message:`Internal server Error ${error}`})
+        
+    }
+}
+
+
+
+export { isUserAuth }
