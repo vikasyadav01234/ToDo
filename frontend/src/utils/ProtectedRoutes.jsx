@@ -1,33 +1,39 @@
 import React, { useEffect, useState } from 'react'
 import Login from '../pages/Login';
 import { isUserAuthorised } from '../api/authApi';
-import { Outlet } from 'react-router';
+import { Navigate, Outlet } from 'react-router';
 
 function ProtectedRoutes() {
-    const  [isvalidUser,setIsValidUser]=useState(false)
-    const token=localStorage.getItem("token")
+    const [isvalidUser, setIsValidUser] = useState(null)
+    const token = localStorage.getItem("token")
 
 
-    useEffect(()=>{
-        if(!token){
-            return
-        }
-
-        async function checkAuthorization(){
-            const response=await isUserAuthorised(token)
-            if(!response.success){
-                return;
+    useEffect(() => {
+         const checkAuthorization = async () => {
+            try {
+                if (!token) {
+                    setIsValidUser(false)
+                    return
+                }
+                const response = await isUserAuthorised(token)
+                if (!response.success) {
+                    localStorage.removeItem("token")
+                    setIsValidUser(false)
+                    return;
+                }
+                setIsValidUser(true)
             }
-            setIsValidUser(true)
-        }
+         catch (error) {
+            setIsValidUser(false)
 
+        }}
         checkAuthorization()
 
-    },[])
+    }, [])
 
 
-
-    return isvalidUser?<Outlet/>:<Login/>
+    if (isvalidUser === null) return <p>Loading...</p>
+    return isvalidUser ? <Outlet /> : <Navigate to="/login" />
 
 
 

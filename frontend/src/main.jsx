@@ -9,6 +9,8 @@ import Login from './pages/Login.jsx'
 import ProtectedRoutes from './utils/ProtectedRoutes.jsx'
 import Todo from './pages/Todo.jsx'
 import Layout from './layout/Layout.jsx'
+import About from './pages/About.jsx'
+import Contact from './pages/Contact.jsx'
 
 
 
@@ -17,8 +19,11 @@ const router = createBrowserRouter(
     <Route path='' element={<Layout/>}>
 
       <Route path='/' element={<Home />} />
+      <Route path='/home' element={<Home />} />
       <Route path='/register' element={<SignUp />} />
       <Route path='/login' element={<Login />} />
+      <Route path='/about' element={<About/>} />
+      <Route path='/contact' element={<Contact />} />
       <Route path='/user' element={<ProtectedRoutes/>}>
         <Route path='todo' element={<Todo />} />
       </Route>

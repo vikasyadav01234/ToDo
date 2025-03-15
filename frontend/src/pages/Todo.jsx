@@ -1,38 +1,91 @@
-import React, { useState } from "react";
-import { saveTask } from "../api/api";
+import React, { useEffect, useState } from "react";
+import { deleteTask, fetchTask, saveTask, updateStatus } from "../api/api.js";
 
 function Todo() {
   const [task, setTask] = useState([]);
   const [text, setText] = useState("");
   const [priority, setPriority] = useState("Low");
-  const [showError,setShowError]=useState('')
+  const [showError, setShowError] = useState("");
+  const [deleteMessage,setDeleteMessage]=useState('')
 
+
+  //update the input field
   const handleTextChange = (e) => {
     setText(e.target.value);
   };
 
-  const handleOnPriorityChange=(e)=>{
-    setPriority(e.target.value)
-  }
 
-  const handleOnAdd=async(e)=>{
-    e.preventDefault()
 
-    const theTask={id:task.length+1,task:text,priority:priority}
-    const response =await saveTask(text,priority)
+  //updating the priority in user input
+  const handleOnPriorityChange = (e) => {
+    setPriority(e.target.value);
+  };
 
-    if(!response.success){
-      setShowError(`Error ! couldn't save task .please try again`)
+
+  //fething the task as soon as page render
+  useEffect(() => {
+    getUserTaskList();
+  }, []);
+
+  //function to fetch the user task list as soon as page load
+  const getUserTaskList = async () => {
+    const response = await fetchTask();
+    if (!response.success) {
       return;
-      
     }
-    setTask([...task,theTask])
-    setText('')
-    setPriority('')
-  }
+    const theList = response.task;
+    
+    setTask(theList.map((e)=>({
+      id:e.id,
+      task:e.task,
+      priority:e.priority,
+      status:e.status
+    })))
+  };
+
+
+  //add the task in DB as re-render the list
+  const handleOnAdd = async (e) => {
+    e.preventDefault();
+    const response = await saveTask(text, priority);
+
+    if (!response.success) {
+      setShowError(`Error ! couldn't save task .please try again`);
+      return;
+    }
+    getUserTaskList();
+    setText("");
+  };
 
 
 
+      //delete the task
+
+      const handleOnDelete=async(id)=>{
+        
+        
+        const response=await deleteTask(id)
+        
+        if(!response.success){
+          setDeleteMessage("")
+          return;
+        }
+  
+        setTask((prev)=>prev.filter((task)=>task.id !==id))
+        setDeleteMessage(response.message)
+      }
+
+
+
+      const handleOnCheck=async(id,check)=>{
+        const response=await updateStatus(id,check)
+        if(!response.success){
+          return;
+        }
+        getUserTaskList()
+        return;
+      }
+    
 
 
   return (
@@ -68,16 +121,31 @@ function Todo() {
         {/* Task List Section */}
         <div className="tasklist mt-6 space-y-4">
           {task.map((eachTask) => (
-            <div key={eachTask.id} className="card bg-gray-50 p-4 rounded-lg shadow flex flex-col sm:flex-row items-center justify-between">
+            <div
+              key={eachTask.id}
+              className="card bg-gray-50 p-4 rounded-lg shadow flex flex-col sm:flex-row items-center justify-between"
+            >
               <div className="flex-1">
-                <p className="font-semibold text-gray-800">Task: {eachTask.task}</p>
-                <p className={`text-sm font-medium ${eachTask.priority === "High" ? "text-red-500" : eachTask.priority === "Medium" ? "text-yellow-500" : "text-green-500"}`}>
+                <p className="font-semibold text-gray-800">
+                  Task: {eachTask.task}
+                </p>
+                
+                <p
+                  className={`text-sm font-medium ${
+                    eachTask.priority === "High"
+                      ? "text-red-500"
+                      : eachTask.priority === "Medium"
+                      ? "text-yellow-500"
+                      : "text-green-500"
+                  }`}
+                >
                   Priority: {eachTask.priority}
                 </p>
               </div>
               <div className="flex items-center space-x-3 mt-2 sm:mt-0">
-                <input type="checkbox" className="w-5 h-5" />
-                <button className="bg-red-500 text-white px-3 py-1 rounded-lg hover:bg-red-600 transition">
+                { eachTask && (
+                <input type="checkbox" checked={eachTask.status}  onChange={()=>{handleOnCheck(eachTask.id,eachTask.status)}} className="w-5 h-5" />)}
+                <button onClick={()=>{handleOnDelete(eachTask.id)}} className="bg-red-500 cursor-pointer text-white px-3 py-1 rounded-lg hover:bg-red-600 transition">
                   Delete
                 </button>
               </div>

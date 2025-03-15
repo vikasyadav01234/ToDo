@@ -7,13 +7,12 @@ dotenv.config()
 
 
 const getUserId=async(req,res,next)=>{
-    const { token }=req.headers.authorization?.split(" ")[1];
+    const token =req.headers.authorization?.split(" ")[1];
     if(!token){
         return res.status(401).json({success:false,message:`Login Expired! Please Login Again`})
     }
     try {
         const decoded=jwt.verify(token,process.env.SECRET_KEY)
-        console.log(decoded)
         req.user=await User.findOne(decoded.id).select("-password")
         next()
         

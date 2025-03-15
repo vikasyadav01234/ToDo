@@ -11,6 +11,11 @@ const taskSchema=new mongoose.Schema(
             type:String,
             required:true
         },
+        status:{
+            type:Boolean,
+            required:false,
+            default:false
+        },
         User:{
             type:mongoose.Schema.Types.ObjectId,
             ref:"User"
@@ -20,3 +25,5 @@ const taskSchema=new mongoose.Schema(
 
 
 const UserTask=mongoose.model("UserTask",taskSchema)
+
+export { UserTask }

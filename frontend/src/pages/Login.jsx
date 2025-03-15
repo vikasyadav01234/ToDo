@@ -6,6 +6,7 @@ function Login() {
     const navigate=useNavigate()
     const [message,setMessage]=useState('')
     const [loginData,setLoginData]=useState({email:'',password:''})
+    const [deleteMessage,setDeleteMessage]=useState('')
 
     const handleOnChange=(e)=>{
         setLoginData({...loginData,[e.target.name]:e.target.value})
@@ -26,6 +27,24 @@ function Login() {
         setLoginData({email:'',password:''})
     }
 
+
+    //delete the task
+
+    const handleOnDelete=async(e)=>{
+      e.preventDefault()
+      
+      const response=await deleteTask(id)
+      if(!response.success){
+        setDeleteMessage("")
+        return;
+      }
+
+      setDeleteMessage(response.message)
+
+
+
+
+    }
 
 
 

@@ -20,7 +20,6 @@ const registerTheUser = async (req, res) => {
         });
     }
     const hashedPassword = await bcrypt.hash(password, 10);
-    console.log(hashedPassword);
     const newUser = new User({
       name: name,
       email: email,
@@ -95,7 +94,7 @@ const isUserAuth=async(req,res)=>{
     if(!token){
         return res.status(401).json({success:false,message:`Login Expired! Please Login`})
     }
-    const decoded=await jwt.verify(token,secret_key)
+    const decoded=jwt.verify(token,secret_key)
     if(!decoded){
         return res.status(401).json({success:false,message:`Login Expired ! Please Login`})
     }

@@ -74,6 +74,12 @@ function SignUp() {
             Sign Up
           </button>
         </form>
+        <p className="text-center text-gray-600 mt-4">
+          Not a user?{" "}
+          <a href="/login" className="text-blue-600 hover:underline">
+            Login here
+          </a>
+        </p>
       </div>
     </div>
   );
