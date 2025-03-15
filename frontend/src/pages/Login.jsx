@@ -6,7 +6,7 @@ function Login() {
     const navigate=useNavigate()
     const [message,setMessage]=useState('')
     const [loginData,setLoginData]=useState({email:'',password:''})
-    const [deleteMessage,setDeleteMessage]=useState('')
+    
 
     const handleOnChange=(e)=>{
         setLoginData({...loginData,[e.target.name]:e.target.value})
@@ -28,23 +28,6 @@ function Login() {
     }
 
 
-    //delete the task
-
-    const handleOnDelete=async(e)=>{
-      e.preventDefault()
-      
-      const response=await deleteTask(id)
-      if(!response.success){
-        setDeleteMessage("")
-        return;
-      }
-
-      setDeleteMessage(response.message)
-
-
-
-
-    }
 
 
 
@@ -83,7 +66,7 @@ function Login() {
         </form>
         <p className="text-center text-gray-600 mt-4">
           Not a user?{" "}
-          <a href="#" className="text-blue-600 hover:underline">
+          <a href="/register" className="text-blue-600 hover:underline">
             Sign up here
           </a>
         </p>

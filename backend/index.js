@@ -7,7 +7,18 @@ import cors from "cors"
 connectDB()
 
 const app=express()
-app.use(cors())
+
+
+app.use(
+  cors({
+    origin: [
+      "https://to-do-git-main-adityas-projects-cbcd3379.vercel.app",
+      "https://to-do-taupe-two-14.vercel.app",
+    ],
+    credentials: true, // This allows cookies and authorization headers to be sent
+  })
+);
+
 app.use(express.json())
 
 dotenv.config()
